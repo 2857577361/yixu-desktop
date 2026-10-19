@@ -28,6 +28,6 @@
 
 0.28.0 已通过 126 项单元测试、塔罗交互测试、Windows 模式 16 个页面布局检查及现有功能回归。Windows 包由 macOS 交叉打包，尚未完成 Windows 真机对通知、开机启动、防火墙及网页视频的验收。当前发布包暂无商业签名。
 
-发布附件还提供 `Windows-Guide.md` 使用说明和 `SHA256SUMS.txt` 完整性校验。
+发布附件提供 `Windows-Guide.md` 使用说明；压缩包完整性校验见 [SHA256SUMS.txt](SHA256SUMS.txt)。
 
 本仓库当前不包含应用源码；Release 页面自动生成的 Source code 文件仅包含此仓库的说明文件。
