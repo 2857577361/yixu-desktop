@@ -1,0 +1,37 @@
+/* Timetable: readable time ranges, bounded inline editing, view-only folding. */
+.routine-view-toolbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:20px 0 12px;flex-wrap:wrap}
+.routine-view-toolbar>span{font-size:12px;color:#8a967e}
+.routine-view-toolbar button{font-size:12px;padding:9px 14px}
+.routine-table th:first-child{min-width:200px;width:220px}
+.routine-table thead th:first-child{text-align:left;padding:16px 14px;white-space:nowrap}
+.routine-table tbody th{padding:18px 14px;text-align:left}
+.routine-time{display:flex;flex-direction:row;align-items:center;gap:7px;font-size:16px;line-height:1.4;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.routine-time span{font-size:inherit;color:#314c3e}
+.routine-time .routine-time-divider{font-size:12px;color:#aaa084;font-weight:400}
+.routine-label{font-size:16px;font-weight:500;line-height:1.6;color:#7c8067;margin:10px 0;overflow-wrap:anywhere}
+.routine-table td{height:150px;padding:12px}
+.routine-table textarea{font-size:16px;line-height:1.8;height:114px;padding:6px 3px;min-width:0;max-width:100%;border-radius:5px;color:#455d46}
+.routine-table textarea::placeholder{color:#a3ac99}
+.routine-row-tools{display:flex;flex-wrap:wrap;align-items:flex-start;gap:10px;margin-top:12px}
+.routine-row-tools .routine-fold{font-size:12px;padding:5px 0;background:none;color:#7e8a6a;white-space:nowrap;line-height:24px}
+.routine-adjust{min-width:0;flex:1}
+.routine-adjust[open]{flex-basis:100%}
+.routine-table .routine-adjust summary{font-size:12px;margin:0;padding:5px 0;line-height:24px;color:#8f886b}
+.routine-row-edit{min-width:0;width:100%;padding:12px 0 0;border-top:1px solid #e1d9bc;margin-top:8px}
+.routine-row-edit label{display:block;font-size:11px;font-weight:400;color:#8d846a;margin-bottom:10px}
+.routine-table .routine-row-edit input{box-sizing:border-box;width:100%;min-width:0;max-width:100%;display:block;font-size:14px;font-weight:400;padding:9px 10px;margin:5px 0 0;border-radius:9px}
+.routine-row-edit input[type=time]{appearance:none;-webkit-appearance:none}
+.routine-edit-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.routine-edit-actions button{font-size:12px;padding:8px 10px;white-space:nowrap}
+.routine-row-edit .routine-hide{display:block;font-size:11px;color:#a0957e;padding:10px 0 0;line-height:1.6;font-weight:400;white-space:normal}
+.routine-table .routine-folded-row th{padding-top:12px;padding-bottom:12px}
+.routine-folded-row .routine-label{margin:5px 0;font-size:15px}
+.routine-folded-row .routine-row-tools{margin-top:3px}
+.routine-table .routine-folded-cell{height:auto;vertical-align:middle;background:#fafbf6}
+.routine-folded-cell>div{display:flex;align-items:center;justify-content:center;gap:16px;color:#a2aa98;font-size:12px}
+.routine-folded-cell button{font-size:12px;white-space:nowrap}
+.routine-save-state{font-size:11px;min-height:16px;margin-top:4px}
+.routine-table .column-resize{right:0;width:9px;border-radius:0}
+.routine-add{flex-wrap:wrap}
+.routine-add label{min-width:0}
+@media(prefers-reduced-motion:no-preference){.routine-folded-cell>div{animation:routine-appear .16s ease-out}@keyframes routine-appear{from{opacity:.3}to{opacity:1}}}

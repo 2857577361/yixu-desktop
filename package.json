@@ -1,0 +1,33 @@
+{
+  "name": "yixu-desktop",
+  "productName": "一序",
+  "version": "0.29.0",
+  "description": "习惯、专注、日记与便笺，连接语雀和 Codex",
+  "main": "main.cjs",
+  "bin": {
+    "yixu": "cli.cjs"
+  },
+  "dependencies": {
+    "bonjour-service": "^1.4.4",
+    "dompurify": "3.4.15",
+    "fflate": "^0.8.2",
+    "lunar-javascript": "1.7.7",
+    "marked": "18.0.14",
+    "pdfjs-dist": "5.6.205",
+    "proper-lockfile": "^4.1.2"
+  },
+  "scripts": {
+    "start": "electron .",
+    "test": "node --test test/*.test.cjs",
+    "package": "electron-packager . 一序 --platform=darwin --arch=arm64 --out=dist-v23 --overwrite --ignore='^/(test|dist.*|screenshots|mobile|supabase)($|/)' --app-bundle-id=local.yixu.desktop --icon=assets/icon.icns && codesign --force --deep --sign - --identifier local.yixu.desktop dist-v23/一序-darwin-arm64/一序.app",
+    "test:mobile": "npm run build --prefix mobile && node test/mobile-pocket-ui.spec.cjs",
+    "test:timetable": "node test/timetable-ui.spec.cjs",
+    "package:windows": "node scripts/package-desktop.mjs win32 x64",
+    "package:mac": "node scripts/package-desktop.mjs darwin arm64"
+  },
+  "devDependencies": {
+    "@electron/packager": "20.3.0",
+    "@playwright/test": "^1.58.0",
+    "electron": "44.4.3"
+  }
+}

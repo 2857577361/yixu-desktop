@@ -1,0 +1,11 @@
+const {randomUUID}=require('node:crypto');
+function ensure(s){return s.timetable||={rows:[],cells:{},revision:''};}
+function text(v,n){if(typeof v!=='string'||v.length>n)throw Error('内容格式不正确或过长');return v;}
+function run(s,action,a){const t=ensure(s);if(action==='timetable.get')return t;
+ if(action==='timetable.row.save'){let row=a.id?t.rows.find(r=>r.id===a.id):null;if(a.id&&!row)throw Error('时间段不存在');const value={...(row||{id:randomUUID()}),...a};value.kind=value.kind||'range';value.scope=value.scope||'weekly';if(!['point','range'].includes(value.kind)||!['uniform','weekly'].includes(value.scope))throw Error('安排类型不正确');if(value.kind==='point')value.end='';for(const k of (value.kind==='point'?['start']:['start','end'])){value[k]=text(value[k]||'',5);if(!/^([01]\d|2[0-3]):[0-5]\d$/.test(value[k]))throw Error('时间格式应为 HH:mm');}if(value.kind==='range'&&value.start>=value.end)throw Error('结束时间应晚于开始时间');if(t.rows.some(r=>value.kind==='range'&&(r.kind||'range')==='range'&&!r.archived&&r.id!==value.id&&value.start<r.end&&value.end>r.start))throw Error('时间段与已有行重叠');value.label=text(value.label||'',50);if(row&&a.expected!==undefined&&row.revision!==a.expected)throw Error('时间段已更新，请刷新后重试');delete value.expected;value.revision=randomUUID();if(row)Object.assign(row,value);else t.rows.push(value);t.rows.sort((a,b)=>a.start.localeCompare(b.start));t.revision=randomUUID();return value;}
+ if(action==='timetable.cell.save'){if(!t.rows.some(r=>r.id===a.row))throw Error('时间段不存在');if(a.day!=='all'&&(!Number.isInteger(a.day)||a.day<0||a.day>6))throw Error('星期不正确');const key=a.row+':'+a.day,old=t.cells[key];if(a.expected!==undefined&&(old?.revision||'')!==a.expected)throw Error('格子已在其他窗口修改，草稿已保留');const entry={body:text(a.body,2000),revision:randomUUID()};t.cells[key]=entry;t.revision=randomUUID();return entry;}
+ if(action==='timetable.row.archive'){const row=t.rows.find(r=>r.id===a.id);if(!row)throw Error('时间段不存在');row.archived=true;t.revision=randomUUID();return row;}
+ if(action==='timetable.row.restore'){const row=t.rows.find(r=>r.id===a.id);if(!row)throw Error('时间段不存在');if(t.rows.some(r=>(row.kind||'range')==='range'&&(r.kind||'range')==='range'&&!r.archived&&r.id!==row.id&&row.start<r.end&&row.end>r.start))throw Error('恢复后会与已有时间段重叠');row.archived=false;t.revision=randomUUID();return row;}
+ throw Error('未知作息表操作');
+}
+module.exports={run};

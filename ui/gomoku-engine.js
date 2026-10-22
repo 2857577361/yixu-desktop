@@ -1,0 +1,7 @@
+(function(root){
+const N=15,D=[[1,0],[0,1],[1,1],[1,-1]];
+function win(b,i){const p=b[i];if(!p)return false;const x=i%N,y=Math.floor(i/N);return D.some(([dx,dy])=>{let n=1;for(const sign of [-1,1])for(let k=1;k<5;k++){const xx=x+dx*k*sign,yy=y+dy*k*sign;if(xx<0||xx>=N||yy<0||yy>=N||b[yy*N+xx]!==p)break;n++;}return n>=5;});}
+function rank(b,i,p){const x=i%N,y=Math.floor(i/N);let score=0;for(const [dx,dy] of D){let n=1,open=0;for(const sign of [-1,1])for(let k=1;k<=5;k++){const xx=x+dx*k*sign,yy=y+dy*k*sign;if(xx<0||xx>=N||yy<0||yy>=N)break;const v=b[yy*N+xx];if(v===p)n++;else{if(!v)open++;break;}}score+=n>=5?1000000:n===4?(open===2?60000:9000):n===3?(open===2?5000:400):n===2?(open===2?200:30):open*2;}return score;}
+function choose(b,p=2){if(!Array.isArray(b)||b.length!==225)throw Error('棋盘不正确');const spots=b.map((v,i)=>!v?i:-1).filter(i=>i>=0);if(!spots.length)return null;if(b.every(v=>!v))return 112;for(const q of [p,3-p])for(const i of spots){b[i]=q;const w=win(b,i);b[i]=0;if(w)return i;}let best=-Infinity,result=spots[0];for(const i of spots){const x=i%N,y=Math.floor(i/N);let near=false;for(let yy=Math.max(0,y-2);yy<=Math.min(14,y+2);yy++)for(let xx=Math.max(0,x-2);xx<=Math.min(14,x+2);xx++)if(b[yy*N+xx])near=true;if(!near)continue;const s=rank(b,i,p)+rank(b,i,3-p)*1.1-(Math.abs(x-7)+Math.abs(y-7))*.01;if(s>best){best=s;result=i;}}return result;}
+const api={win,choose,rank};if(typeof module!=='undefined')module.exports=api;else root.GomokuEngine=api;
+})(typeof window!=='undefined'?window:globalThis);

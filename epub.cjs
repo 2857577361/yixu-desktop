@@ -1,0 +1,3 @@
+const {unzipSync,strFromU8}=require('fflate');
+function unpack(data){let size=0,count=0;const files=unzipSync(data,{filter(f){if(++count>5000||f.originalSize>20*1024*1024||(size+=f.originalSize)>100*1024*1024)throw Error('EPUB 解压内容过大');return /\.(xml|opf|ncx|xhtml|html|htm|png|jpe?g|gif|webp)$/i.test(f.name);}});const text={},images={};for(const [name,bytes]of Object.entries(files)){if(/\.(png|jpe?g|gif|webp)$/i.test(name)){const ext=name.split('.').pop().toLowerCase();images[name]='data:image/'+(ext==='jpg'?'jpeg':ext)+';base64,'+Buffer.from(bytes).toString('base64');}else text[name]=strFromU8(bytes);}if(!text['META-INF/container.xml'])throw Error('EPUB 缺少书籍索引');return {format:'epub',files:text,images};}
+module.exports={unpack};

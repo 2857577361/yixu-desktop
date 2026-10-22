@@ -1,0 +1,13 @@
+(function(root,f){if(typeof module==='object'&&module.exports)module.exports=f(require('./tarot-engine.js'));else root.TarotReading=f(root.Tarot);})(globalThis,Tarot=>{
+ const topics={general:'综合',study:'工作与学习',relationship:'关系与相处',decision:'选择与行动'};
+ const suitMeanings={major:'更适合从当前阶段、看待问题的方式来理解',wands:'把注意力放在动力、尝试和推进方式',cups:'把注意力放在感受、需要和彼此的回应',swords:'把注意力放在事实、判断和沟通',pentacles:'把注意力放在时间、精力和可用资源'};
+ const prompts={general:['今天哪件事最占据你的注意力？','把需要处理的事情写成一句话，只挑一步开始。'],study:['你卡在目标不清、任务太大，还是缺少反馈？','把下一步缩成一个能在 15 分钟内完成的小任务，并写下完成标准。'],relationship:['哪些需要已经说清，哪些仍在等待对方猜测？','找一个具体场景，使用“我感到……我希望……”表达需要，也给对方回应的空间。'],decision:['哪个条件对你最重要，哪个风险可以先小规模验证？','列出两个选项各自的成本与收益，先验证一个可逆的假设，不急着作长期承诺。']};
+ function infer(q=''){return /关系|感情|恋爱|伴侣|朋友|相处|沟通|婚/.test(q)?'relationship':/工作|学习|读书|考试|项目|职场|事业/.test(q)?'study':/选择|决定|要不要|是否|怎么办|方向/.test(q)?'decision':'general';}
+ function interpret(s,topic='auto'){if(!s?.cards||![1,3].includes(s.cards.length))throw Error('请先抽取一张或三张牌');topic=topic==='auto'?infer(s.question):topic;if(!topics[topic])throw Error('解读方向不正确');const cards=s.cards.map(c=>{const x=Tarot.deck.find(d=>d.id===c.id);if(!x)throw Error('牌面不存在');return {...x,isReversed:!!c.isReversed};});const parts=cards.map((c,i)=>({name:c.name,orientation:c.isReversed?'逆位':'正位',role:cards.length===1?'此刻的提醒':['当下的状态','值得留意的阻碍','可以尝试的方向'][i],meaning:Tarot.text(c),connection:suitMeanings[c.suit]+'。'+(c.isReversed?'逆位在这里表示内在、延迟或需要重新调整的部分，不等于坏结果。':'正位在这里强调你可以辨认和使用的资源。'),question:c.question||prompts[topic][0]}));
+ const reversed=cards.filter(c=>c.isReversed).length,counts={};for(const c of cards)counts[c.suit]=(counts[c.suit]||0)+1;const dominant=Object.keys(counts).sort((a,b)=>counts[b]-counts[a])[0];
+ const summary=cards.length===1?'这次的核心线索是「'+cards[0].keywords+'」。'+parts[0].meaning:'把这三张牌作为一段思考过程：'+cards[0].name+'帮助观察当下，'+cards[1].name+'提示需要检查的部分，'+cards[2].name+'提供一个可尝试的方向。它们并不是对未来结果的保证。';
+ return {topic,title:topics[topic]+'解读',summary,parts,balance:suitMeanings[dominant]+'。'+(reversed===cards.length?'本组全部逆位，可以先检查准备、节奏和未表达的需要，再决定是否推进。':reversed?'正逆位同时出现，可以同时看见已有资源和需要调整的环节。':'本组均为正位，可以观察如何把意象落到具体行动，而不把它理解为一定顺利。'),actions:[prompts[topic][1],cards.length===3?'围绕「'+cards[2].name+'」写下一个下一步；'+parts[2].meaning:'围绕「'+cards[0].name+'」写下今天愿意尝试的一件小事。'],reflection:prompts[topic][0]};
+ }
+ function markdown(s,topic='auto'){const x=interpret(s,topic);return '### '+x.title+'\n\n'+x.summary+'\n\n'+x.parts.map(p=>'**'+p.role+' · '+p.name+'（'+p.orientation+'）**\n\n'+p.meaning+'\n\n'+p.connection).join('\n\n')+'\n\n**合起来看**\n\n'+x.balance+'\n\n**可以尝试**\n\n'+x.actions.map(a=>'- '+a).join('\n')+'\n\n'+(s.aiText?'**AI 深入解读**\n\n'+s.aiText+'\n\n':'');}
+ return {topics,infer,interpret,markdown};
+});

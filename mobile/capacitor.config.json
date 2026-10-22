@@ -1,0 +1,22 @@
+{
+  "appId": "local.yixu.mobile",
+  "appName": "一序",
+  "webDir": "dist",
+  "android": {
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    },
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_yixu",
+      "iconColor": "#3E604E"
+    },
+    "SystemBars": {
+      "style": "LIGHT",
+      "insetsHandling": "css",
+      "initialViewportFitValueHint": "cover"
+    }
+  }
+}

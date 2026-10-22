@@ -1,0 +1,2 @@
+const {Worker}=require('node:worker_threads'),path=require('node:path');
+module.exports=(action,dest,args={},progress=()=>{})=>new Promise((resolve,reject)=>{let settled=false;const worker=new Worker(path.join(__dirname,'archive.worker.cjs'),{workerData:{action,dest,args}});worker.on('message',m=>{if(m.progress)progress(m.progress);if(m.error){settled=true;reject(Error(m.error));}if(m.result){settled=true;resolve(m.result);}});worker.on('error',reject);worker.on('exit',code=>{if(!settled)reject(Error('归档导出未完成（'+code+'）'));});});
